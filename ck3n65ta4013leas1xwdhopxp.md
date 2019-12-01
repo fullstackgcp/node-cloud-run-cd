@@ -5,9 +5,9 @@
 
 Software developers often build artifacts (Docker containers, WAR files, APK bundles etc.) from codes.
 
-This requires reliable internet connection, high processing power, sufficient storage space, constant upgrade of build tools among others.
+This often requires reliable internet connection, high processing power, sufficient storage space, constant upgrade of build tools among others.
 
-The built artifacts are published e.g. deploying containers to the cloud or hosting APK files on Play store.
+Built artifacts could be published e.g. deploying containers to the cloud or hosting APK files on Play store.
 However, this also includes steps that might be difficult when done manually or on a local machine.
 
 > In this tutorial, you will leverage [Cloud Build](https://cloud.google.com/cloud-build/) to build artifacts extremely fast on the Cloud using the following examples: 
@@ -28,9 +28,9 @@ Before you begin, ensure you have setup Cloud [SDK](https://cloud.google.com/sdk
 
 ## Building Docker containers to Container Registry 
 
-Cloud Build allows to build a Docker image and push the image to Container Registry.
+Cloud Build allows you to build Docker images and push the built images to Container Registry.
 
-You can get my sample source codes for a *Flask Application* [here] (https://gist.github.com/Timtech4u/6639a92b4197ea831ba9b975c9b34a76)  and *Dockerfile* below:
+You can get my sample source codes for a *Containerized Flask Application* [here](https://gist.github.com/Timtech4u/6639a92b4197ea831ba9b975c9b34a76)  and *Dockerfile* below:
 
 ```
 FROM python:3.7-stretch
@@ -48,7 +48,7 @@ There should be a *Dockerfile* on your project root directory and then you can r
     gcloud builds submit --tag gcr.io/[PROJECT_ID]/my-image .
 ```
 
-You've just built a Docker image named *my-image* using a Dockerfile and pushed the image to Container Registry.
+You've just built a Docker image named **my-image** using a Dockerfile and pushed the image to Container Registry.
 
 You can also build on the Cloud using build configuration file `cloudbuild.yaml` which is created on the project root directory with content as follows:
 
@@ -78,9 +78,32 @@ Cloud Build supports [builders ](https://cloud.google.com/cloud-build/docs/cloud
 
 However, I would use a [custom gradle builder](https://gcr.io/fullstackgcp/gradle) to build an Android project APK and then enable Cloud Build to store the artifacts to a Cloud Storage Bucket.
 
-You can get my sample source codes for an Android application [here](https://github.com/Timtech4u/gcb-android-tutorial) and the build configuration file `cloudbuild.yaml` below:
+You can get my sample source codes for the Android application [here](https://github.com/Timtech4u/gcb-android-tutorial) and modified build configuration file `cloudbuild.yaml` below:
 
 ```
+steps:
+# Set a persistent volume according to https://cloud.google.com/cloud-build/docs/build-config (search for volumes)
+- name: 'ubuntu'
+  volumes:
+  - name: 'vol1'
+    path: '/persistent_volume'
+  args: ['cp', '-a', '.', '/persistent_volume']
+  
+# Build APK with Gradle Image from mounted /persistent_volume using name: vol1
+- name: 'gcr.io/cloud-builders/docker'
+  volumes:
+  - name: 'vol1'
+    path: '/persistent_volume'
+  args: ['run', '-v', 'vol1:/home/app', '--rm', 'gcr.io/fullstackgcp/gradle', '/bin/sh', '-c', 'cd /home/app && ./gradlew clean assembleDebug']
+
+# Push the APK file from vol1 to your GCS Bucket.
+artifacts:
+  objects:
+    location: 'gs://[STORAGE_LOCATION]/'
+    paths: ['*.apk']
+
+
+timeout: 1200s
 
 ```
 
@@ -92,7 +115,7 @@ gcloud builds submit --config cloudbuild.yaml .
 Note that:
 - [STORAGE_LOCATION] represents the path to your Cloud Storage bucket.
 - `gcr.io/fullstackgcp/gradle` is the gradle builder
-- Ensure that your  [Cloud Build service account](https://cloud.google.com/cloud-build/docs/securing-builds/configure-access-control)  has access to write to Cloud Storage OR that the Bucket is publicly open.
+- [Cloud Build service account](https://cloud.google.com/cloud-build/docs/securing-builds/configure-access-control)  should have access to write to Cloud Storage OR that the Bucket is publicly open.
 
 
 ## Automating builds
@@ -102,19 +125,24 @@ Cloud Build can import source code from Google Cloud Storage, Cloud Source Repos
 We’ll proceed to create a trigger that listens to changes on a particular branch on our source codes and performs the operation in our cloudbuild.yaml configuration file.
 
 - Open the  [Cloud Build Triggers page](https://console.cloud.google.com/cloud-build/triggers)
-- Click on *Connect repository* 
-- Select your Source Code option and Continue.
-- Authenticate and Create Push Trigger with required inputs.
+- Click on **Connect repository** 
+- Select your **Source Code option** and **Continue**.
+- **Authenticate** and Create **Push Trigger** with required inputs.
 
 
 ![cb.PNG](https://cdn.hashnode.com/res/hashnode/image/upload/v1575214414652/lQr19DXak.png)
+Above is a sample Cloud Build Trigger page.
 
-You can monitor Triggers on the  [History page](https://console.cloud.google.com/cloud-build/builds) 
 
-If you would some insights on where to deploy, check out  [Google Cloud Compute Options Guide](https://github.com/Timtech4u/gcp_compute_options_guide) .
+You can monitor Build Triggers on the  [History page](https://console.cloud.google.com/cloud-build/builds) 
 
-If you want to learn more about Cloud Build check out the following resources:
+> If you would like some insights on where to deploy your artifacts, check out  [Google Cloud Compute Options Guide](https://github.com/Timtech4u/gcp_compute_options_guide) .
+
+
+**Additional Resources on Cloud Build**
+
 -  [Cloud Build Documentation](https://cloud.google.com/cloud-build/docs/) 
 -  [Official Cloud Builder](https://github.com/GoogleCloudPlatform/cloud-builders)
 -  [Community Cloud Builders](https://github.com/GoogleCloudPlatform/cloud-builders-community)
+- [Awesome Cloud Build](https://github.com/Timtech4u/awesome-cloudbuild)
 -  [Google Cloud Platform Awesome List](https://github.com/GoogleCloudPlatform/awesome-google-cloud)
