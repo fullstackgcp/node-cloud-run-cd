@@ -85,7 +85,8 @@ _There are multiple options for deploying container images on Google Cloud,  [se
 gcloud builds submit --config cloudbuild.yaml
 ```
 
-The **cloudbuild.yaml** file is a configuration file for Google Cloud Build which contains a step to build the container image and upload to Google Container Registry, the second step then deploys the image to Cloud Run.
+The **cloudbuild.yaml** file is a configuration file for  [Google Cloud Build](https://cloud.google.com/cloud-build/)  which contains two steps:
+one to build the container image & upload to  [Google Container Registry](https://cloud.google.com/container-registry); step two then deploys the image to Cloud Run.
 
 Execute the command above on Cloud Shell after cloning the sample codes from the [Gist](https://gist.github.com/Timtech4u/fda016845505878fe412e8c1881f804b) or setting up your own codes 
 
