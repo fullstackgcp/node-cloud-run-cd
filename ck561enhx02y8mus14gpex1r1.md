@@ -1,6 +1,6 @@
 ## A Developer's Guide to Building Serverless Applications on the Cloud - Part 1 (Deployment)
 
-In this new series, I'll discuss few topics crucial to building serverless applications while using Google Cloud, they would span across deployment, CI/CD, tooling, backend-as-a-service and more.
+In this series, I'll discuss few topics crucial to building serverless applications while using Google Cloud, they would span across deployment, CI/CD, tooling, backend-as-a-service and more.
 
 > In this article, I will discuss how Developers at DevShopZ *easily* moved from local development to the Cloud. This covers simple functions, web-based application, and containerized applications including code samples.
 
