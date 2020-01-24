@@ -136,7 +136,7 @@ Finally, we can apply to execute, make sure to enter ‘**yes**’ to approve.
 
 
 ```
-$ terraform apply</span>
+$ terraform apply
 ```
 
 
