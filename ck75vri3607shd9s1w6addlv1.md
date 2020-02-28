@@ -78,6 +78,6 @@ _It might take some minutes for an external IP address to be generated. Run the 
 To learn more about the Kubectl, check out [Overview of kubectl](https://kubernetes.io/docs/reference/kubectl/overview/).
 
 ## Other Articles in this series
-- [Kubernetes on GKE : Series Intro](https://blog.mercurie.ng/kubernetes-on-gke-series-intro/)
-- [Deploying Ready Apps to GKE using Cloud Marketplace](https://blog.mercurie.ng/deploying-ready-apps-to-gke-using-cloud-marketplace/)
-- [Managing Apps on GKE using Helm Charts](https://blog.mercurie.ng/deploying-container-images-to-gke-using-kubectl-commands/#)
+- [Kubernetes on GKE : Series Intro](https://fullstackgcp.com/kubernetes-on-gke-series-intro-5969ae700e99)
+- [Deploying Ready Apps to GKE using Cloud Marketplace](https://fullstackgcp.com/deploying-ready-apps-to-gke-using-cloud-marketplace-4353ea499546)
+- [Managing Apps on GKE using Helm Charts](#)
